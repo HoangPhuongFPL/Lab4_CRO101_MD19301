@@ -1,88 +1,64 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  FlatList
-} from 'react-native';
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, TextInput, Modal, Dimensions } from "react-native"
 
 type ContactType = {
-  name: string;
-  email: string;
-  position: string;
-  photo: string;
-};
+  name: string
+  email: string
+  position: string
+  photo: string
+}
 
 const DATA: ContactType[] = [
   {
-    name: 'Nguyễn Văn 1',
-    email: '1@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn A",
+    email: "a@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
   {
-    name: 'Nguyễn Văn 2',
-    email: '2@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn B",
+    email: "b@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
   {
-    name: 'Nguyễn Văn 3',
-    email: '3@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn C",
+    email: "b@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
   {
-    name: 'Nguyễn Văn 4',
-    email: '4@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn D",
+    email: "b@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
   {
-    name: 'Nguyễn Văn 5',
-    email: '5@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn E",
+    email: "b@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
   {
-    name: 'Nguyễn Văn 6',
-    email: '6@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
+    name: "Nguyễn Văn F",
+    email: "b@gmail.com",
+    position: "Developer",
+    photo: "https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg",
   },
-  {
-    name: 'Nguyễn Văn 7',
-    email: '7@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
-  },
-  {
-    name: 'Nguyễn Văn 8',
-    email: '8@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
-  },
-  {
-    name: 'Nguyễn Văn 9',
-    email: '9@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
-  },
-  {
-    name: 'Nguyễn Văn 10',
-    email: '10@gmail.com',
-    position: 'Developer',
-    photo: 'https://anhdepfree.com/wp-content/uploads/2020/11/hinh-nen-phong-canh-tinh-yeu.jpg',
-  },
-];
+]
 
-const ContactItem: React.FC<{ contact: ContactType }> = ({ contact }) => {
+const ContactItem: React.FC<{
+  contact: ContactType
+  index: number
+  onEdit: (contact: ContactType) => void
+  onDelete: (index: number) => void
+}> = ({ contact, index, onEdit, onDelete }) => {
   return (
     <View style={styles.listItem}>
-      {/* <Image source={{ uri: contact.photo }} style={styles.avatar} /> //khong hien thi anh dang tim cach fix */}
-
-      <Image source={require('../assets/images/anh-meo-de-thuong-cute-nhat.jpg')} style={styles.avatar} />
+      <Image source={{ uri: contact.photo }} style={styles.avatar} />
 
       <View style={styles.bodyItem}>
         <Text style={styles.nameText}>{contact.name}</Text>
@@ -90,36 +66,123 @@ const ContactItem: React.FC<{ contact: ContactType }> = ({ contact }) => {
         <Text style={styles.positionText}>{contact.position}</Text>
       </View>
 
-      <Text style={styles.callText}>Call</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.editButton} onPress={() => onEdit(contact)}>
+          <Text style={styles.buttonText}>Sửa</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(index)}>
+          <Text style={styles.buttonText}>Xóa</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  );
-};
+  )
+}
 
-const bt1 = () => {
+const ContactList = () => {
+  const [contacts, setContacts] = useState(DATA)
+  const [editingContact, setEditingContact] = useState<ContactType | null>(null)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
+  const [isModalVisible, setIsModalVisible] = useState(false)
+
+  const handleEdit = (contact: ContactType, index: number) => {
+    setEditingContact(contact)
+    setEditingIndex(index)
+    setIsModalVisible(true)
+  }
+
+  const handleDelete = (index: number) => {
+    setContacts(contacts.filter((_, i) => i !== index))
+  }
+
+  const handleSave = () => {
+    if (editingContact && editingIndex !== null) {
+      setContacts(contacts.map((contact, index) => (index === editingIndex ? editingContact : contact)))
+      setIsModalVisible(false)
+      setEditingContact(null)
+      setEditingIndex(null)
+    }
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+    setEditingContact(null)
+    setEditingIndex(null)
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={DATA}
-        keyExtractor={(item) => item.email}
-        renderItem={({ item }) => <ContactItem contact={item} />}
+        data={contacts}
+        keyExtractor={(item, index) => `${item.email}-${index}`}
+        renderItem={({ item, index }) => (
+          <ContactItem
+            contact={item}
+            index={index}
+            onEdit={(contact) => handleEdit(contact, index)}
+            onDelete={handleDelete}
+          />
+        )}
       />
+      <Modal animationType="fade" transparent={true} visible={isModalVisible} onRequestClose={handleCancel}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Chỉnh sửa liên hệ</Text>
+            {editingContact && (
+              <>
+                <TextInput
+                  style={styles.input}
+                  value={editingContact.name}
+                  onChangeText={(text) => setEditingContact({ ...editingContact, name: text })}
+                  placeholder="Tên"
+                />
+                <TextInput
+                  style={styles.input}
+                  value={editingContact.email}
+                  onChangeText={(text) => setEditingContact({ ...editingContact, email: text })}
+                  placeholder="Email"
+                />
+                <TextInput
+                  style={styles.input}
+                  value={editingContact.position}
+                  onChangeText={(text) => setEditingContact({ ...editingContact, position: text })}
+                  placeholder="Vị trí"
+                />
+                <TextInput
+                  style={styles.input}
+                  value={editingContact.photo}
+                  onChangeText={(text) => setEditingContact({ ...editingContact, photo: text })}
+                  placeholder="URL hình ảnh"
+                />
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+                    <Text style={styles.buttonText}>Hủy</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.buttonText}>Lưu</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   avatar: {
     width: 50,
@@ -128,27 +191,86 @@ const styles = StyleSheet.create({
   },
   bodyItem: {
     flex: 1,
-    alignItems: 'center',
+    marginLeft: 10,
   },
   nameText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   emailText: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
     marginTop: 2,
   },
   positionText: {
     fontSize: 14,
-    color: '#999',
+    color: "#999",
     marginTop: 2,
   },
-  callText: {
-    color: 'green',
-    fontSize: 16,
-    fontWeight: 'bold',
+  buttonContainer: {
+    flexDirection: "row",
   },
-});
+  editButton: {
+    backgroundColor: "#ccc",
+    padding: 5,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    padding: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    width: Dimensions.get("window").width * 0.8,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  input: {
+    backgroundColor: "#ccc",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  modalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  cancelButton: {
+    backgroundColor: "gray",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+    alignItems: "center",
+  },
+  saveButton: {
+    backgroundColor: "#696969",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    alignItems: "center",
+  },
+})
 
-export default bt1;
+export default ContactList
